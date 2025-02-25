@@ -79,6 +79,11 @@ class Landlord():
     def add_available_house(self, house):
         self.get_list_of_houses().append(house)
 
+    def add_contract(self, house, landlord, tenant, start_date, end_date, lock):
+        lock.acquire()
+        Contract(house, landlord, tenant, start_date, end_date)
+        lock.release()
+
     def __str__(self):
         string = f"Ім'я орендодавця: {self.get_name()}"
 
@@ -132,8 +137,9 @@ print(landlord_Steve)
 print(tenant_Nick)
 print()
 
-t1 = threading.Thread(target = Contract(house_2, landlord_Steve, tenant_Nick, "21.12.2024", "21.05.2025"))
-t2 = threading.Thread(target = Contract(house_1, landlord_John, tenant_Fred, "23.12.2024", "13.05.2025"))
+lock = threading.Lock
+t1 = threading.Thread(target = landlord_Steve.add_contract(house_2, landlord_Steve, tenant_Nick, "21.12.2024", "21.05.2025",lock))
+t2 = threading.Thread(target = landlord_John.add_contract(house_1, landlord_John, tenant_Fred, "23.12.2024", "13.05.2025", lock))
 
 t1.start()
 t2.start()
