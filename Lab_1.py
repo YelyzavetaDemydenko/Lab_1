@@ -11,6 +11,8 @@ class House():
         self.__price = price
         self.__availability = availability
         
+        self.lock = threading.Lock()
+
     def get_price(self):
         return self.__price
 
@@ -79,10 +81,13 @@ class Landlord():
     def add_available_house(self, house):
         self.get_list_of_houses().append(house)
 
-    def add_contract(self, house, landlord, tenant, start_date, end_date, lock):
-        lock.acquire()
-        Contract(house, landlord, tenant, start_date, end_date)
-        lock.release()
+    def add_contract(self, house, landlord, tenant, start_date, end_date):
+        house.lock.acquire()
+        if house.get_availability():
+            Contract(house, landlord, tenant, start_date, end_date)
+        else:
+            print("Ми не можемо оформити контракт.")
+        house.lock.release()
 
     def __str__(self):
         string = f"Ім'я орендодавця: {self.get_name()}"
@@ -137,9 +142,9 @@ print(landlord_Steve)
 print(tenant_Nick)
 print()
 
-lock = threading.Lock
-t1 = threading.Thread(target = landlord_Steve.add_contract(house_2, landlord_Steve, tenant_Nick, "21.12.2024", "21.05.2025",lock))
-t2 = threading.Thread(target = landlord_John.add_contract(house_1, landlord_John, tenant_Fred, "23.12.2024", "13.05.2025", lock))
+
+t1 = threading.Thread(target = landlord_Steve.add_contract(house_1, landlord_Steve, tenant_Nick, "21.12.2024", "21.05.2025"))
+t2 = threading.Thread(target = landlord_Steve.add_contract(house_1, landlord_Steve, tenant_Fred, "23.12.2024", "13.05.2025"))
 
 t1.start()
 t2.start()
