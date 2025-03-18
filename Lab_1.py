@@ -3,37 +3,43 @@ import threading
 class House():
     """Клас житлове приміщення"""
 
-    number = 0
+    num = 0
     def __init__(self, price, availability = True):
-        House.number += 1
+        House.num += 1
 
-        self.__number = House.number
+        self.__num = House.num
         self.__price = price
         self.__availability = availability
         
         self.lock = threading.Lock()
 
-    def get_price(self):
+    @property
+    def price(self):
         return self.__price
 
-    def get_number(self):
-        return self.__number
-
-    def get_availability(self):
-        return self.__availability
-
-    def set_price(self, price):
+    @price.setter
+    def price(self, price):
         self.__price = price
 
-    def set_number(self, number):
-        self.__number = number
+    @property
+    def number(self):
+        return self.__num
 
-    def set_availability(self, availability):
+    @number.setter
+    def number(self, num):
+        self.__num = num
+
+    @property
+    def availability(self):
+        return self.__availability
+
+    @availability.setter
+    def availability(self, availability):
         self.__availability = availability
 
     def __str__(self):
-        availability_str = "Є в наявності." if self.get_availability() else "Немає в наявності."
-        return f"Житло №{self.get_number()}. Ціна: {self.get_price()}. {availability_str}"
+        availability_str = "Є в наявності." if self.availability else "Немає в наявності."
+        return f"Житло №{self.number}. Ціна: {self.price}. {availability_str}"
 
 class Tenant():
     """Клас орендатор"""
@@ -42,22 +48,26 @@ class Tenant():
         self.__name = name
         self.__rental_house = rental_house
 
-    def get_name(self):
+    @property
+    def name(self):
         return self.__name
 
-    def get_rental_house(self):
+    @name.setter
+    def name(self, name):
+        self.__name = name    
+
+    @property
+    def rental_house(self):
         return self.__rental_house
 
-    def set_name(self, name):
-        self.__name = name
-
-    def set_rental_house(self, house):
+    @rental_house.setter
+    def rental_house(self, house):
         self.__rental_house = house
 
     def __str__(self):
-        string = f"Ім'я орендатора: {self.get_name()}"
-        if self.get_rental_house():
-            string += f"\nОрендовано житло №{self.get_rental_house().get_number()}."
+        string = f"Ім'я орендатора: {self.name}"
+        if self.rental_house:
+            string += f"\nОрендовано житло №{self.rental_house.number}."
         else:
             string += "\nНе орендує житло."
         return string
@@ -69,93 +79,110 @@ class Landlord():
         self.__name = name
         self.__list_of_houses = list_of_houses
 
-    def get_name(self):
+    @property
+    def name(self):
         return self.__name
 
-    def get_list_of_houses(self):
+    @name.setter
+    def name(self, name):
+        self.__name = name    
+
+    @property
+    def list_of_houses(self):
         return self.__list_of_houses
 
-    def set_name(self, name):
-        self.__name = name
-
     def add_available_house(self, house):
-        self.get_list_of_houses().append(house)
+        self.list_of_houses.append(house)
 
     def add_contract(self, house, landlord, tenant, start_date, end_date):
         house.lock.acquire()
-        if house.get_availability():
+        if house.availability:
             Contract(house, landlord, tenant, start_date, end_date)
         else:
             print("Ми не можемо оформити контракт.")
         house.lock.release()
 
     def __str__(self):
-        string = f"Ім'я орендодавця: {self.get_name()}"
+        string = f"Ім'я орендодавця: {self.name}"
 
-        if self.get_list_of_houses():
+        if self.list_of_houses:
             string += "\nСписок житлових приміщень:\n№ Ціна  Наявність"
-            for house in self.get_list_of_houses():
-                availability_str = "Є в наявності." if house.get_availability() else "Немає в наявності."
-                string += f"\n{house.get_number()} {house.get_price()} {availability_str}"
+            for house in self.list_of_houses:
+                availability_str = "Є в наявності." if house.availability else "Немає в наявності."
+                string += f"\n{house.number} {house.price} {availability_str}"
         return string
 
 
 class Contract():
     """Клас договір оренди"""
-    
+    list_of_contracts = []
     def __init__(self, house, landlord, tenant, start_date, end_date):
-        self.house_numder = house.get_number()
-        self.house_price = house.get_price()
-        self.landlord = landlord
-        self.tenant = tenant
-        self.start_date = start_date
-        self.end_date = end_date
+        self.__house_numder = house.number
+        self.__house_price = house.price
+        self.__landlord = landlord
+        self.__tenant = tenant
+        self.__start_date = start_date
+        self.__end_date = end_date
+        self.list_of_contracts.append(self)
 
-        house.set_availability(False)
-        tenant.set_rental_house(house)
+        house.availability = False
+        tenant.rental_house = house
+
+    @property
+    def house_number(self):
+        return self.__house_number
+            
+    @property
+    def house_price(self):
+        return self.__house_price
+
 
     def __str__(self):
         return (
             f"Договір оренди житлового приміщення №{self.house_numder}"
             f"\nЦіна оренди в місяць: {self.house_price}"
-            f"\nОрендодавець: {self.landlord.get_name()}"
-            f"\nОрендатор: {self.tenant.get_name()}"
+            f"\nОрендодавець: {self.landlord.name}"
+            f"\nОрендатор: {self.tenant.name}"
             f"\nТермін оренди: з {self.start_date} до {self.end_date}"
             )
 
+if __name__ == "__main__":
+    landlord_Steve = Landlord("Steve")
+    landlord_John = Landlord("John")
+    tenant_Nick = Tenant("Nick")
+    tenant_Fred = Tenant("Fred")
+    print(landlord_Steve)
+    print(landlord_John)
+    print(tenant_Nick)
+    print(tenant_Fred)
+    print()
 
-landlord_Steve = Landlord("Steve")
-landlord_John = Landlord("John")
-tenant_Nick = Tenant("Nick")
-tenant_Fred = Tenant("Fred")
-print(landlord_Steve)
-print(landlord_John)
-print(tenant_Nick)
-print(tenant_Fred)
-print()
-
-house_1 = House(15000)
-house_2 = House(25000)
-landlord_Steve.add_available_house(house_1)
-landlord_Steve.add_available_house(house_2)
-print(landlord_Steve)
-print(tenant_Nick)
-print()
+    house_1 = House(15000)
+    house_2 = House(25000)
+    landlord_Steve.add_available_house(house_1)
+    landlord_Steve.add_available_house(house_2)
+    print(landlord_Steve)
+    print(tenant_Nick)
+    print()
 
 
-t1 = threading.Thread(target = landlord_Steve.add_contract(house_1, landlord_Steve, tenant_Nick, "21.12.2024", "21.05.2025"))
-t2 = threading.Thread(target = landlord_Steve.add_contract(house_1, landlord_Steve, tenant_Fred, "23.12.2024", "13.05.2025"))
+    t1 = threading.Thread(target = landlord_Steve.add_contract(house_1, landlord_Steve, tenant_Nick, "21.12.2024", "21.05.2025"))
+    t2 = threading.Thread(target = landlord_Steve.add_contract(house_1, landlord_Steve, tenant_Fred, "23.12.2024", "13.05.2025"))
 
-t1.start()
-t2.start()
+    t1.start()
+    t2.start()
 
-t1.join()
-t2.join()
+    t1.join()   
+    t2.join()
 
-print()
-print(landlord_Steve)
-print(tenant_Nick)
-print(tenant_Fred)
+    print()
+    print(landlord_Steve)
+    print(tenant_Nick)
+    print(tenant_Fred)
 
-print(house_1)
-print(house_2)
+    print(house_1)
+    print(house_2)
+
+    print()
+    print(Contract.list_of_contracts[0])
+    print(Contract.list_of_contracts[0].house_price)
