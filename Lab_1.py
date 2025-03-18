@@ -4,8 +4,11 @@ class House():
     """Клас житлове приміщення"""
 
     num = 0
-    def __init__(self, price, availability = True):
-        House.num += 1
+    def __init__(self, price, availability = True, number = None):
+        if number is None:
+            House.num += 1
+        else:
+            House.num = number
 
         self.__num = House.num
         self.__price = price
@@ -74,10 +77,12 @@ class Tenant():
 
 class Landlord():
     """Клас орендодавець"""
-
-    def __init__(self, name, list_of_houses = []):
+    def __init__(self, name, list_of_houses = None):
         self.__name = name
-        self.__list_of_houses = list_of_houses
+        if list_of_houses is None:
+            self.__list_of_houses = []
+        else:
+            self.__list_of_houses = list_of_houses
 
     @property
     def name(self):
@@ -173,7 +178,7 @@ if __name__ == "__main__":
     print(tenant_Fred)
     print()
 
-    house_1 = House(15000)
+    house_1 = House(price = 15000)
     house_2 = House(25000)
     landlord_Steve.add_available_house(house_1)
     landlord_Steve.add_available_house(house_2)

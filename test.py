@@ -5,7 +5,10 @@ import sys
 
 class TestHouse(unittest.TestCase):
     def setUp(self):
-        self.house = House(1000000)
+        self.house = House(price = 1000000, number = 1)
+
+    def test_get_number(self):
+        self.assertEqual(self.house.number, 1)
 
     def test_get_price(self):
         self.assertEqual(self.house.price, 1000000)
@@ -23,13 +26,10 @@ class TestHouse(unittest.TestCase):
         self.house.availability = True
         self.assertTrue(self.house.availability)  
 
-    def test_get_number(self):
-        self.assertEqual(self.house.number, 1)
-
 class TestTenant(unittest.TestCase):
     def setUp(self):
         self.tenant = Tenant("Eren")
-        self.house = House(100000)
+        self.house = House(price = 100000, number = 1)
 
     def test_get_name(self):
         self.assertEqual(self.tenant.name, "Eren")
@@ -45,9 +45,10 @@ class TestTenant(unittest.TestCase):
         self.tenant.rental_house = self.house
         self.assertEqual(self.tenant.rental_house, self.house)
 
+
 class TestLandlord(unittest.TestCase):
     def setUp(self):
-        self.house = House(10000)
+        self.house = House(price = 10000, number = 1)
         self.landlord = Landlord("Eren")
         self.tenant = Tenant("Armin")
 
@@ -77,7 +78,7 @@ class TestLandlord(unittest.TestCase):
 
 class TestContract(unittest.TestCase):
     def setUp(self):
-        self.house = House(100000)
+        self.house = House(price = 100000, number = 1)
         self.landlord = Landlord("Bob")
         self.landlord.add_available_house(self.house)
         self.tenant = Tenant("Job")
