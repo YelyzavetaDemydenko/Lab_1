@@ -86,6 +86,7 @@ class TestContract(unittest.TestCase):
         self.landlord.add_contract(self.house, self.landlord, self.tenant, "21.04.2025", "21.05.2025")
         self.contract = Contract.list_of_contracts[0]
 
+        self.assertEqual(self.contract.house_number, 1)
         self.assertEqual(self.contract.house_price, 100000)
         self.assertEqual(self.contract.landlord, self.landlord)
         self.assertEqual(self.contract.tenant, self.tenant)
