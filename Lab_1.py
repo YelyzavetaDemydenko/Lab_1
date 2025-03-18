@@ -178,7 +178,7 @@ if __name__ == "__main__":
     print(tenant_Fred)
     print()
 
-    house_1 = House(price = 15000)
+    house_1 = House(15000)
     house_2 = House(25000)
     landlord_Steve.add_available_house(house_1)
     landlord_Steve.add_available_house(house_2)
