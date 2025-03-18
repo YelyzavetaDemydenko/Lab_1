@@ -117,7 +117,7 @@ class Contract():
     """Клас договір оренди"""
     list_of_contracts = []
     def __init__(self, house, landlord, tenant, start_date, end_date):
-        self.__house_numder = house.number
+        self.__house_number = house.number
         self.__house_price = house.price
         self.__landlord = landlord
         self.__tenant = tenant
@@ -135,11 +135,27 @@ class Contract():
     @property
     def house_price(self):
         return self.__house_price
+    
+    @property
+    def landlord(self):
+        return self.__landlord
+    
+    @property
+    def tenant(self):
+        return self.__tenant
+    
+    @property
+    def start_date(self):
+        return self.__start_date
+    
+    @property
+    def end_date(self):
+        return self.__end_date
 
 
     def __str__(self):
         return (
-            f"Договір оренди житлового приміщення №{self.house_numder}"
+            f"Договір оренди житлового приміщення №{self.house_number}"
             f"\nЦіна оренди в місяць: {self.house_price}"
             f"\nОрендодавець: {self.landlord.name}"
             f"\nОрендатор: {self.tenant.name}"
