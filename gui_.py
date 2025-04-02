@@ -20,7 +20,6 @@ class App():
 
         text = Label(self.root, text= "Вкажіть, хто ви: орендодавець чи орендатор?")
         text.pack()
-        text.update()
 
         btn1 = Button(root, text = "Орендодавець", width = 15, bg="#CFECEC", command= self.create_landlord)
         btn1.pack(pady=5)
