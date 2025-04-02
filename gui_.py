@@ -112,9 +112,7 @@ class App():
         self.landlord.name = self.name_entry.get()
         self.name = self.landlord.name
 
-        for elem in self.all_elements:
-            elem.destroy()
-        self.all_elements = []
+        self.clean()
 
         text = Label(self.root, text = "Ім'я змінено!")
         text.pack()
