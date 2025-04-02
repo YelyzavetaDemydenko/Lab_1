@@ -20,6 +20,7 @@ class App():
 
         text = Label(self.root, text= "Вкажіть, хто ви: орендодавець чи орендатор?")
         text.pack()
+        text.update()
 
         btn1 = Button(root, text = "Орендодавець", width = 15, bg="#CFECEC", command= self.create_landlord)
         btn1.pack(pady=5)
@@ -136,7 +137,10 @@ class App():
             list_of_houses = self.landlord.list_of_houses
             
             for house in list_of_houses:
-                text = Label(self.root, text = str(house))
+                if "Є в наявності" in str(house):
+                    text = Label(self.root, text = str(house), fg = "#006400")
+                else:
+                    text = Label(self.root, text = str(house), fg = "#FA8072")
                 text.pack()
                 list_of_houses_.append(text)
 
@@ -415,7 +419,10 @@ class App():
             list_of_houses = landlord.list_of_houses
             
             for house in list_of_houses:
-                text = Label(self.root, text = str(house))
+                if "Є в наявності" in str(house):
+                    text = Label(self.root, text = str(house),fg = "#006400")
+                else:
+                    text = Label(self.root, text = str(house), fg = "#FA8072")
                 text.pack()
                 list_of_houses_.append(text)
 
