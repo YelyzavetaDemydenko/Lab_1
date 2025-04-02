@@ -16,9 +16,7 @@ class App():
     def menu(self):
         """" Меню """
 
-        for elem in self.all_elements:
-            elem.destroy()
-        self.all_elements = []
+        self.clean()
 
         text = Label(self.root, text= "Вкажіть, хто ви: орендодавець чи орендатор?")
         text.pack()
@@ -35,9 +33,7 @@ class App():
     def create_landlord(self):
         """ Введення імені орендодавця """
 
-        for elem in self.all_elements:
-            elem.destroy()
-        self.all_elements = []
+        self.clean()
 
         text1 = Label(self.root, text= "Добрий день, орендодавцю!")
         text1.pack()
@@ -62,9 +58,7 @@ class App():
         except:
             pass
 
-        for elem in self.all_elements:
-            elem.destroy()
-        self.all_elements = []
+        self.clean()
 
         flag = 0
         for landlord in self.list_of_landlords:
@@ -99,9 +93,7 @@ class App():
     def landlord_name(self):
         """ Змінення імені орендодавця """
 
-        for elem in self.all_elements:
-            elem.destroy()
-        self.all_elements = []
+        self.clean()
 
         text = Label(self.root, text = "Введіть нове ім'я")
         text.pack()
@@ -136,9 +128,7 @@ class App():
     def landlord_list_of_houses(self):
         """ Переглянути список житла, яким владіє орендодавець """
 
-        for elem in self.all_elements:
-            elem.destroy()
-        self.all_elements = []
+        self.clean()
 
         
         if self.landlord.list_of_houses:
@@ -165,9 +155,7 @@ class App():
     def landlord_add_house(self):
         """ Додати нове житло до списку """
 
-        for elem in self.all_elements:
-            elem.destroy()
-        self.all_elements = []
+        self.clean()
 
         text = Label(self.root, text = "Введіть ціну оренди:")
         text.pack()
@@ -186,9 +174,7 @@ class App():
         """ Процес створення та додавання житла """
 
         price = self.price.get()
-        for elem in self.all_elements:
-            elem.destroy()
-        self.all_elements = []
+        self.clean()
 
         self.landlord.list_of_houses.append(House(price))
         
@@ -206,9 +192,7 @@ class App():
     def landlord_add_contract(self):
         """ Винаймання житла (створення контракту) """
 
-        for elem in self.all_elements:
-            elem.destroy()
-        self.all_elements = []
+        self.clean()
 
         text = Label(self.root, text = "Заповніть форму:")
         text.pack()
@@ -260,9 +244,7 @@ class App():
         self.start_date_ = self.start_date.get()
         self.end_date_ = self.end_date.get()
 
-        for elem in self.all_elements:
-            elem.destroy()
-        self.all_elements = []
+        self.clean()
 
         for landlord in self.list_of_landlords:
             if landlord.name == self.landlord_name_1:
@@ -293,9 +275,7 @@ class App():
     def create_tenant(self):
         """ Введення імені орендатора """
 
-        for elem in self.all_elements:
-            elem.destroy()
-        self.all_elements = []
+        self.clean()
 
         text1 = Label(self.root, text = "Добрий день, орендаторе!")
         text1.pack()
@@ -323,9 +303,7 @@ class App():
         except:
             pass
 
-        for elem in self.all_elements:
-            elem.destroy()
-        self.all_elements = []
+        self.clean()
 
         flag = 0
         for tenant in self.list_of_tenants:
@@ -357,9 +335,7 @@ class App():
     def tenant_name(self):
         """ Змінення імені орендатора """
 
-        for elem in self.all_elements:
-            elem.destroy()
-        self.all_elements = []
+        self.clean()
 
         text = Label(self.root, text = "Введіть нове ім'я")
         text.pack()
@@ -378,9 +354,7 @@ class App():
         self.tenant.name = self.name_entry.get()
         self.name = self.tenant.name
 
-        for elem in self.all_elements:
-            elem.destroy()
-        self.all_elements = []
+        self.clean()
 
         text = Label(self.root, text = "Ім'я змінено!")
         text.pack()
@@ -393,9 +367,7 @@ class App():
     def choose_landlord(self):
         """ Обрати орендодавця """
 
-        for elem in self.all_elements:
-            elem.destroy()
-        self.all_elements = []
+        self.clean()
 
         if self.list_of_landlords:
             text = Label(self.root, text = "Оберіть одного з орендодавців:")
@@ -428,9 +400,7 @@ class App():
     def show_list_of_houses(self):       
         """ Визначаємо орендодавця та показуємо список """
 
-        for elem in self.all_elements:
-            elem.destroy()
-        self.all_elements = []
+        self.clean()
 
         n = 0
         for var in self.list_of_var:
@@ -464,9 +434,7 @@ class App():
     def tenant_add_contract(self):
         """ Бронювання житла """
 
-        for elem in self.all_elements:
-            elem.destroy()
-        self.all_elements = []
+        self.clean()
 
         text = Label(self.root, text = "Заповніть форму:")
         text.pack()
@@ -509,6 +477,10 @@ class App():
 
         self.all_elements.extend([text, text2, text3, text4, text5, text6, self.landlord_name_, self.tenant_name_, self.house_number, self.end_date, self.start_date, btn, btn2])
 
+    def clean(self):
+        for elem in self.all_elements:
+            elem.destroy()
+        self.all_elements = []
 
 root = Tk()
 app = App(root)
