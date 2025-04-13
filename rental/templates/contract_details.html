@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Бронювання - Орендатор</title>
+
+</head>
+<body>
+    <h1>Бронювання оселі | Орендатор | Бронювання</h1>
+        <p> Оселю заброньовано!</p>
+        <p>Договір оренди житлового приміщення №{{ contract_.house_number }}</p>
+        <p>Ціна оренди в місяць: {{ contract_.house_price }}</p>
+        <p>Орендодавець: {{ contract_.landlord.name }}</p>
+        <p>Орендатор: {{ contract_.tenant.name }}</p>
+        <p>Термін оренди: з {{ contract_.start_date }} до {{ contract_.end_date }}</p>
+        <a href="/tenant">Далі</a>
+    
+
+</body>
+</html>

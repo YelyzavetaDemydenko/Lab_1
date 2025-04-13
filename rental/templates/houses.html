@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Бронювання - Оселі</title>
+
+</head>
+<body>
+    <h1>Бронювання оселі | Оселі</h1>
+
+
+    {% for landlord in landlords_ %}
+    {% for house in landlord.list_of_houses %}
+        <h3>{{ house }} Власник: {{ landlord.name }}</h3>
+    {% endfor %}
+{% endfor %}
+
+<ul>
+    <li><a href="/">Назад</a></li>
+</ul>
+
+</body>
+</html>

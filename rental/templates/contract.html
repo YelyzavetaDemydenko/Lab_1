@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Бронювання - Орендатор</title>
+
+</head>
+<body>
+    <h1>Бронювання оселі | Орендатор | Бронювання</h1>
+            <h3>Заповніть форму:</h3>
+            <form method="post" action="/contract/{{ landlord_name }}/{{ house_number }}">
+                <p> Орендатор - {{ tenant_name }}</p>
+                <p> Орендодавець - {{ landlord_name }}</p>
+                <p> Номер житла - {{ house_number }}</p>
+                <label for="date">Оберіть початок бронювання:</label>
+                <input type="date" id="start_date" name="start_date" required>
+                <label for="date">Оберіть кінець бронювання:</label>
+                <input type="date" id="end_date" name="end_date" required> <br>
+                <input type="submit" value="Зберегти">
+            </form>
+            <p><a href="/tenant">Назад</a></p>
+</body>
+</html>

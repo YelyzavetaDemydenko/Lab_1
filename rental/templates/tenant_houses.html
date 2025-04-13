@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Бронювання - Оселі</title>
+</head>
+<body>
+    <h1>Бронювання оселі | Оселі</h1>
+
+    {% for landlord in landlords_ %}
+        {% for house in landlord.list_of_houses %}
+            <h3>{{ house }} Власник: {{ landlord.name }}</h3>
+            {% if house.availability %}
+                <a href="/contract/{{ landlord.name }}/{{ house.number }}">Забронювати</a>
+            {% else %}
+                <p><em>Недоступне для бронювання</em></p>
+            {% endif %}
+            <br><br>
+        {% endfor %}
+    {% endfor %}
+
+    <ul>
+        <li><a href="/">Назад</a></li>
+    </ul>
+</body>
+</html>

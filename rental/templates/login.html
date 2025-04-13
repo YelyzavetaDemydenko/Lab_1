@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Бронювання - Вхід</title>
+
+</head>
+<body>
+    <h1>Бронювання оселі | Вхід в аккаунт</h1>
+            <h3>Заповніть форму:</h3>
+            <form method="post" action="/login">
+                Ім'я: <input type="text" name="name"><br>
+                <label for="account">Тип аккаунту:</label><br>
+                <input type="radio" id="tenant" name="account" value="Орендатор">
+                <label for="tenant">Орендатор</label><br>
+                <input type="radio" id="landlord" name="account" value="Орендодавець">
+                <label for="landlord">Орендодавець</label><br>
+                <input type="submit" value="Зберегти">
+            </form>
+            <p><a href="/">Назад</a></p>
+</body>
+</html>
