@@ -10,7 +10,8 @@ app.secret_key = 'your_secret_key_here'
 list_of_houses_ = []
 list_of_landlords_ = []
 list_of_tenants_ = []
-
+tenant_info = dict()
+landlord_info = dict()
 
 @app.route("/")
 def home():
@@ -22,12 +23,27 @@ def login():
     if request.method == 'GET':
         return render_template("login.html")
     elif request.method == 'POST':
-        name = request.form['name']
+        email = request.form['email']
+        password = request.form['password']
         account_type = request.form['account']
         if account_type == "Орендатор":
-            return redirect(url_for('tenant_login', name=name, account_type = account_type))
+            return redirect(url_for('tenant_login', email=email, account_type = account_type, password = password))
         else:
-            return redirect(url_for('landlord_login', name=name, account_type = account_type))
+            return redirect(url_for('landlord_login', email=email, account_type = account_type, password = password))
+
+
+@app.route("/register", methods = ['GET', 'POST'])
+def register():
+    if request.method == 'GET':
+        return render_template("register.html")
+    elif request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        account_type = request.form['account']
+        if account_type == "Орендатор":
+            return redirect(url_for('tenant_register', email=email, account_type = account_type, password = password))
+        else:
+            return redirect(url_for('landlord_register', email=email, account_type = account_type, password = password))
 
 
 @app.route("/houses")
@@ -37,20 +53,37 @@ def houses():
 
 @app.route("/tenant_login")
 def tenant_login():
-    name = request.args.get('name')
+    email = request.args.get('email')
     account_type = request.args.get('account_type')
+    password = request.args.get('password')
     flag = 0
     for tenant in list_of_tenants_:
-        if tenant.name == name:
+        if tenant.name == email:
             flag = 1
             tenant_ = tenant
             break
     if not flag:
-        list_of_tenants_.append(Tenant(name))
-        tenant_ = list_of_tenants_[-1]
+        return render_template("wrong_login.html")
+    elif tenant_info[tenant_] == password:
+        session["tenant_name"] = tenant_.name
+        return render_template("tenant_login.html", account_type = account_type, tenant_ = tenant_)
+    else:
+        return render_template("wrong_password.html")
+
+    
+
+
+@app.route("/tenant_register")
+def tenant_register():
+    email = request.args.get('email')
+    account_type = request.args.get('account_type')
+    password = request.args.get('password')
+    list_of_tenants_.append(Tenant(email))
+    tenant_ = list_of_tenants_[-1]
+    tenant_info[tenant_] = password
 
     session["tenant_name"] = tenant_.name
-    return render_template("tenant_login.html", account_type = account_type, tenant_ = tenant_)
+    return render_template("tenant_register.html", account_type = account_type, tenant_ = tenant_)
 
 
 @app.route("/tenant")
@@ -64,6 +97,19 @@ def tenant():
     return render_template("tenant.html", tenant_ = tenant_)
 
 
+@app.route("/show_tenant_info")
+def show_tenant_info():
+    tenant_name = session.get('tenant_name')
+    for tenant in list_of_tenants_:
+        if tenant.name == tenant_name:
+            tenant_ = tenant
+            break
+    session["tenant_name"] = tenant_.name
+    if tenant_.rental_house is None:
+        return render_template("show_tenant_info.html", tenant_ = tenant_, house_ = "Не орендує житло")
+    else:
+        return render_template("show_tenant_info.html", tenant_ = tenant_, house_ = f"Орендоване житло: №{tenant_.rental_house.number}")
+
 @app.route("/tenant_name", methods = ['GET', 'POST'])
 def tenant_name():
     tenant_name = session.get('tenant_name')
@@ -75,8 +121,8 @@ def tenant_name():
     if request.method == "GET":
         return render_template("tenant_name.html")
     elif request.method == "POST":
-        name = request.form["name"]
-        tenant_.name = name
+        email = request.form["email"]
+        tenant_.name = email
     session["tenant_name"] = tenant_.name
     return redirect(url_for("tenant"))
 
@@ -94,20 +140,35 @@ def tenant_houses():
 
 @app.route("/landlord_login")
 def landlord_login():
-    name = request.args.get('name')
+    email = request.args.get('email')
     account_type = request.args.get('account_type')
+    password = request.args.get('password')
     flag = 0
     for landlord in list_of_landlords_:
-        if landlord.name == name:
+        if landlord.name == email:
             flag = 1
             landlord_ = landlord
             break
     if not flag:
-        list_of_landlords_.append(Landlord(name))
-        landlord_ = list_of_landlords_[-1]
+        return render_template("wrong_login.html")
+    elif landlord_info[landlord_] == password:
+        session["landlord_name"] = landlord_.name
+        return render_template("landlord_login.html", account_type = account_type, landlord_ = landlord_)
+    else:
+        return render_template("wrong_password.html")
+
+
+@app.route("/landlord_register")
+def landlord_register():
+    email = request.args.get('email')
+    account_type = request.args.get('account_type')
+    password = request.args.get('password')
+    list_of_landlords_.append(Landlord(email))
+    landlord_ = list_of_landlords_[-1]
+    landlord_info[landlord_] = password
 
     session["landlord_name"] = landlord_.name
-    return render_template("landlord_login.html", account_type = account_type, landlord_ = landlord_)
+    return render_template("landlord_register.html", account_type = account_type, landlord_ = landlord_)
 
 
 @app.route("/landlord")
@@ -121,6 +182,16 @@ def landlord():
     return render_template("landlord.html", landlord_ = landlord_)
 
 
+@app.route("/show_landlord_info")
+def show_landlord_info():
+    landlord_name = session.get('landlord_name')
+    for landlord in list_of_landlords_:
+        if landlord.name == landlord_name:
+            landlord_ = landlord
+            break
+    session["landlord_name"] = landlord_.name
+    return render_template("show_landlord_info.html", landlord_ = landlord_)
+
 @app.route("/landlord_name", methods = ['GET', 'POST'])
 def landlord_name():
     landlord_name = session.get('landlord_name')
@@ -132,8 +203,8 @@ def landlord_name():
     if request.method == "GET":
         return render_template("landlord_name.html")
     elif request.method == "POST":
-        name = request.form["name"]
-        landlord_.name = name
+        email = request.form["email"]
+        landlord_.name = email
     session["landlord_name"] = landlord_.name
     return redirect(url_for("landlord"))
 
@@ -160,11 +231,19 @@ def new_house():
     if request.method == 'GET':
         return render_template("new_house.html")
     elif request.method == 'POST':
-        price = int(request.form['price'])
-        new_house_ = House(price)
-        landlord_.list_of_houses.append(new_house_)
-        list_of_houses_.append(new_house_)
-        return redirect(url_for("landlord"))
+        price = request.form['price']
+        flag = 0
+        try:
+            price = float(price)
+        except:
+            return render_template("wrong_price.html")
+        if price > 0:
+            new_house_ = House(price)
+            landlord_.list_of_houses.append(new_house_)
+            list_of_houses_.append(new_house_)
+            return redirect(url_for("landlord"))
+        else:
+            return render_template("wrong_price.html")
 
 
 @app.route('/contract/<landlord_name>/<int:house_number>', methods = ['GET', 'POST'])
