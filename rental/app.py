@@ -64,7 +64,7 @@ def tenant_login():
             break
     if not flag:
         return render_template("wrong_login.html")
-    elif tenant_info[tenant_] == password:
+    elif tenant_info[tenant_.name] == password:
         session["tenant_name"] = tenant_.name
         return render_template("tenant_login.html", account_type = account_type, tenant_ = tenant_)
     else:
@@ -78,12 +78,14 @@ def tenant_register():
     email = request.args.get('email')
     account_type = request.args.get('account_type')
     password = request.args.get('password')
-    list_of_tenants_.append(Tenant(email))
-    tenant_ = list_of_tenants_[-1]
-    tenant_info[tenant_] = password
-
-    session["tenant_name"] = tenant_.name
-    return render_template("tenant_register.html", account_type = account_type, tenant_ = tenant_)
+    tenant_ = Tenant(email)
+    if tenant_.name in tenant_info.keys():
+        return render_template("account_already_exist.html")
+    else: 
+        list_of_tenants_.append(tenant_)
+        tenant_info[tenant_.name] = password
+        session["tenant_name"] = tenant_.name
+        return render_template("tenant_register.html", account_type = account_type, tenant_ = tenant_)
 
 
 @app.route("/tenant")
@@ -117,12 +119,16 @@ def tenant_name():
         if tenant.name == tenant_name:
             tenant_ = tenant
             break
-    
+    old_email = tenant_.name
     if request.method == "GET":
         return render_template("tenant_name.html")
     elif request.method == "POST":
-        email = request.form["email"]
-        tenant_.name = email
+        email_ = request.form["email"]
+        tenant_.name = email_
+        for email in tenant_info.keys():
+            if email == old_email:
+                tenant_info[email_] = tenant_info.pop(old_email)
+                break
     session["tenant_name"] = tenant_.name
     return redirect(url_for("tenant"))
 
@@ -151,7 +157,7 @@ def landlord_login():
             break
     if not flag:
         return render_template("wrong_login.html")
-    elif landlord_info[landlord_] == password:
+    elif landlord_info[landlord_.name] == password:
         session["landlord_name"] = landlord_.name
         return render_template("landlord_login.html", account_type = account_type, landlord_ = landlord_)
     else:
@@ -163,12 +169,14 @@ def landlord_register():
     email = request.args.get('email')
     account_type = request.args.get('account_type')
     password = request.args.get('password')
-    list_of_landlords_.append(Landlord(email))
-    landlord_ = list_of_landlords_[-1]
-    landlord_info[landlord_] = password
-
-    session["landlord_name"] = landlord_.name
-    return render_template("landlord_register.html", account_type = account_type, landlord_ = landlord_)
+    landlord_ = Landlord(email)
+    if landlord_.name in landlord_info.keys():
+        return render_template("account_already_exist.html")
+    else: 
+        list_of_landlords_.append(landlord_)
+        landlord_info[landlord_.name] = password
+        session["landlord_name"] = landlord_.name
+        return render_template("landlord_register.html", account_type = account_type, landlord_ = landlord_)
 
 
 @app.route("/landlord")
@@ -199,12 +207,16 @@ def landlord_name():
         if landlord.name == landlord_name:
             landlord_ = landlord
             break
-    
+    old_email = landlord_.name
     if request.method == "GET":
         return render_template("landlord_name.html")
     elif request.method == "POST":
-        email = request.form["email"]
-        landlord_.name = email
+        email_ = request.form["email"]
+        landlord_.name = email_
+        for email in landlord_info.keys():
+            if email == old_email:
+                landlord_info[email_] = landlord_info.pop(old_email)
+                break
     session["landlord_name"] = landlord_.name
     return redirect(url_for("landlord"))
 
